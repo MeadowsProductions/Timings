@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+
+* {
+    font-family: 'Rubik', sans-serif;
+}
+
+body {
+    background-color: rgb(27, 29, 32);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    text-align: center;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    color: white;
+}
+
+.date {
+    margin-bottom: 25px;
+    position: relative;
+    top: 50px;
+}
+
+.firstDate {
+    margin-bottom: 10px;
+}
+
+.money {
+    position: relative;
+    top: 50px;
+}
+
+.calculate {
+    position: relative;
+    top: 70px;
+}
+
+.results {
+    position: relative;
+    top: 70px;
+}
+
+.top {
+    width: 500px;
+    height: 600px;
+    background-color: black;
+    border-radius: 7.5px;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.65);
+    text-align: center;
+}
+
+.results {
+    opacity: 0;
+    transition: 0.75s;
+}
