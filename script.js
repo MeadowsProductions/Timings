@@ -32,3 +32,11 @@ function calculate() {
     hours.innerText = "Total Hours: " + (timeResult / 60).toFixed(0);
     results.style.opacity = "1";
 }
+
+timeInputs.forEach(el => {
+    el.addEventListener("input", () => {
+        if(el.value.length === 2 || el.value.length === 5) {
+            el.value = el.value + ":";
+        }
+    })
+})
