@@ -12,6 +12,7 @@ const firstMoney = $(".first");
 const secondMoney = $(".second");
 const results = $(".results");
 const historyDisplay = $(".history");
+const clearHistory = $(".clearHistory");
 
 let min;
 let day;
@@ -58,3 +59,8 @@ function update(history) {
         historyDisplay.appendChild(temp);
     }
 }
+
+clearHistory.addEventListener("click", () => {
+    localStorage.clear();
+    window.location.reload();
+})
