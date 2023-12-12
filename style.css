@@ -56,3 +56,14 @@ h1, h2, h3, h4, h5, h6, p {
     opacity: 0;
     transition: 0.75s;
 }
+
+.history {
+    position: absolute;
+    width: 400px;
+    height: 500px;
+    background-color: rgb(0, 0, 0);
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.6);
+    border-radius: 7.5px;
+    right: 100px;
+    overflow: auto;
+}

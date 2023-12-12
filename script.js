@@ -1,6 +1,7 @@
 const $ = e => document.querySelector(e);
 const $$ = e => document.querySelectorAll(e);
 
+const history = JSON.parse(localStorage.getItem("history")) || [];
 const calcButton = $(".calculate");
 const dateInputs = $$("input[type=date]");
 const timeInputs = $$("input[type=text]");
@@ -10,6 +11,7 @@ const hours = $(".hours");
 const firstMoney = $(".first");
 const secondMoney = $(".second");
 const results = $(".results");
+const historyDisplay = $(".history");
 
 let min;
 let day;
@@ -31,6 +33,9 @@ function calculate() {
     perDay.innerText = "Per Day: " + parseFloat(tempMoneyVar * 1440).toLocaleString();
     hours.innerText = "Total Hours: " + (timeResult / 60).toFixed(0);
     results.style.opacity = "1";
+    history.push(tempMoneyVar);
+    localStorage.setItem("history", JSON.stringify(history));
+    update(history);
 }
 
 timeInputs.forEach(el => {
@@ -40,3 +45,16 @@ timeInputs.forEach(el => {
         }
     })
 })
+
+if(history) {
+    update(history);
+}
+
+function update(history) {
+    historyDisplay.innerHTML = "";
+    for(i = 0; i < history.length; i++) {
+        const temp = document.createElement("h1");
+        temp.innerText = parseFloat(history[i]).toLocaleString();
+        historyDisplay.appendChild(temp);
+    }
+}
