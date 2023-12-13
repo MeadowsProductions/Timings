@@ -66,14 +66,12 @@ h1, h2, h3, h4, h5, h6, p {
     border-radius: 7.5px;
     right: 100px;
     overflow: auto;
-    display: none;
 }
 
 .clearHistory {
     position: absolute;
     bottom: 25px;
     right: 25px;
-    display: none;
 }
 
 button {
