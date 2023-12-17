@@ -1,10 +1,11 @@
 const $ = e => document.querySelector(e);
 const $$ = e => document.querySelectorAll(e);
 
-const history = JSON.parse(localStorage.getItem("history")) || [];
+const history = JSON.parse(localStorage.getItem("historyV2")) || [];
 const calcButton = $(".calculate");
-const dateInputs = $$("input[type=date]");
+const dateInputs = $$("input[date]");
 const timeInputs = $$("input[time]");
+const labelInput = $("input[label]");
 const perMin = $(".perMin");
 const perHour = $(".perHour");
 const perDay = $(".perDay");
@@ -40,8 +41,12 @@ function calculate() {
     perDay.innerText = "Per Day: " + parseFloat(moneyResult * 1440).toLocaleString();
     hours.innerText = "Total Hours: " + (timeResult / 60).toFixed(0);
     results.style.opacity = "1";
+    moneyResult = {
+        label: labelInput.value || "[Blank]",
+        result: parseFloat(moneyResult).toLocaleString()
+    };
     history.push(moneyResult);
-    localStorage.setItem("history", JSON.stringify(history));
+    localStorage.setItem("historyV2", JSON.stringify(history));
     update(history);
 }
 
@@ -59,10 +64,10 @@ if(history) {
 
 function update(history) {
     historyDisplay.innerHTML = "";
-    for(i = 0; i < history.length; i++) {
-        const temp = document.createElement("h1");
-        temp.innerText = parseFloat(history[i]).toLocaleString();
-        historyDisplay.appendChild(temp);
+    for (let i = 0; i < history.length; i++) {
+        const el = document.createElement("div");
+        el.innerHTML = `<h2>${history[i].label}:</h2><h2>${history[i].result}</h2>`;
+        historyDisplay.appendChild(el);
     }
 }
 
@@ -82,5 +87,7 @@ function update(history) {
 
 clearHistory.addEventListener("click", () => {
     localStorage.clear();
-    window.location.reload();
+    location.reload();
 })
+
+localStorage.removeItem("history")
