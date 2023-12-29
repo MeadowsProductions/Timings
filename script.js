@@ -2,6 +2,10 @@
 const $ = e => document.querySelector(e);
 const $$ = e => document.querySelectorAll(e);
 
+// Helpful functions :)
+const parseValue = (input) => parseFloat(input.value.replace(/,/g, ''));
+const formatTime = (seconds) => new Date(seconds * 1000).toISOString().substr(11, 8);
+
 // DOM elements
 const calcButton = $(".calculate");
 const dateInputs = $$("input[date]");
@@ -19,7 +23,7 @@ const clearHistory = $(".clearHistory");
 const copyDate = $(".copyDate");
 
 // Variables for calculations
-let tempOne, tempTwo, firstDate, secondDate, timeResult, moneyResult, time, dateOne, dateTwo;
+let tempOne, tempTwo, firstDate, secondDate, timeResult, time, dateOne, dateTwo, seconds, minutes, hours, days;
 
 // Event listener for the calculate button
 calcButton.addEventListener("click", calculate);
@@ -42,28 +46,18 @@ clearHistory.addEventListener("click", clearLocalStorage);
 let savedHistory = JSON.parse(localStorage.getItem("historyV2")) || [];
 updateHistory(savedHistory);
 
+// WHAT DO YOU THINK IT DOES
 function calculate() {
-    const parseValue = (input) => parseFloat(input.value.replace(/,/g, ''));
-    const parseDateTime = (date, time) => new Date(`${date.value} ${time.value}`);
-    const formatTime = (seconds) => new Date(seconds * 1000).toISOString().substr(11, 8);
-    const tempOne = parseValue(firstMoney);
-    const tempTwo = parseValue(secondMoney);
-    const firstDate = parseDateTime(dateInputs[0], timeInputs[0]);
-    const secondDate = parseDateTime(dateInputs[1], timeInputs[1]);
-    const time = (secondDate - firstDate) / 60000;
-    const timeResult = [(secondDate - firstDate) / 3600000, (secondDate - firstDate) / 60000, (secondDate - firstDate) / 1000];
-    const totalSeconds = Math.floor(timeResult[2]);
-    const formattedTime = formatTime(totalSeconds);
-    const moneyResult = ((tempTwo - tempOne) / time).toFixed(0);
-    perMin.innerText = `Per Minute: ${parseFloat(moneyResult).toLocaleString()}`;
-    perHour.innerText = `Per Hour: ${parseFloat(moneyResult * 60).toLocaleString()}`;
-    perDay.innerText = `Per Day: ${parseFloat(moneyResult * 1440).toLocaleString()}`;
-    timeElapsed.innerText = `Time Elapsed: ${formattedTime}`;
-    results.style.opacity = "1";
-    const resultEntry = { label: labelInput.value || "[Blank]", result: parseFloat(moneyResult).toLocaleString() };
-    savedHistory.push(resultEntry);
-    localStorage.setItem("historyV2", JSON.stringify(savedHistory));
-    updateHistory(savedHistory);
+    const moneys = [parseValue(firstMoney), parseValue(secondMoney)];
+    const times = [new Date(dateInputs[0].value + " " + timeInputs[0].value), new Date(dateInputs[1].value + " " + timeInputs[1].value)], time = (times[1] - times[0]) / 60000, moneyResult = (moneys[1] - moneys[0]) / time;
+    perMin.innerText = "Per Minute: " + parseFloat(moneyResult.toFixed(0)).toLocaleString(), perHour.innerText = "Per Hour: " + parseFloat((moneyResult * 60).toFixed(0)).toLocaleString(), perDay.innerText = "Per Day: " + parseFloat((moneyResult * 1440).toFixed(0)).toLocaleString(); results.style.opacity = "1";
+    seconds = ((times[1] - times[0]) / 1000).toFixed(0), minutes = 0, hours = 0, days = 0;
+    while(seconds>=60) {seconds-=60;minutes++}
+    while(minutes>=60){minutes-=60;hours++}
+    while(hours>=24){hours-=24;days++}
+    seconds = seconds.toString().padStart(2, "0"), minutes = minutes.toString().padStart(2, "0"), hours = hours.toString().padStart(2, "0"), days = days.toString().padStart(2, "0");
+    timeElapsed.innerText = `Time Elapsed: ${days}:${hours}:${minutes}:${seconds}`;
+    addHistory(labelInput.value, Math.floor(moneyResult));
 }
 
 // Function to format time inputs
@@ -103,6 +97,14 @@ function updateHistory(history) {
         entryElement.innerHTML = `<h2>${entry.label}:</h2><h2>${entry.result}</h2>`;
         historyDisplay.appendChild(entryElement);
     }
+}
+
+// Function to add history
+function addHistory(label, money) {
+    const resultEntry = { label: label || "[Blank]", result: parseFloat(money).toLocaleString() };
+    savedHistory.push(resultEntry);
+    localStorage.setItem("historyV2", JSON.stringify(savedHistory));
+    updateHistory(savedHistory);
 }
 
 copyDate.addEventListener("click", () => {
