@@ -42,8 +42,8 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .top {
-    width: 400px;
-    height: 500px;
+    width: 450px;
+    height: 550px;
     background-color: black;
     border-radius: 7.5px;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.65);

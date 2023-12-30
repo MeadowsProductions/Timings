@@ -109,6 +109,7 @@ function addHistory(label, money) {
     updateHistory(savedHistory);
 }
 
+// Function to copy date
 copyDate.addEventListener("click", () => {
     if (dateInputs[1].value === "") {
         dateInputs[1].value = dateInputs[0].value;
@@ -117,6 +118,7 @@ copyDate.addEventListener("click", () => {
     }
 })
 
+// Function to insert files (holyt sh)
 firstFI.addEventListener("change", () => {
     if (firstFI.files.length > 0) {
         const fileName = firstFI.files[0].name;
@@ -134,6 +136,7 @@ firstFI.addEventListener("change", () => {
     }
 })
 
+// Second file input
 secondFI.addEventListener("change", () => {
     if (secondFI.files.length > 0) {
         const fileName = secondFI.files[0].name;
