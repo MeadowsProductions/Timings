@@ -10,6 +10,8 @@ const formatTime = (seconds) => new Date(seconds * 1000).toISOString().substr(11
 const calcButton = $(".calculate");
 const dateInputs = $$("input[date]");
 const timeInputs = $$("input[time]");
+const firstFI = $(".firstFI");
+const secondFI = $(".secondFI");
 const labelInput = $("input[label]");
 const perMin = $(".perMin");
 const perHour = $(".perHour");
@@ -52,9 +54,9 @@ function calculate() {
     const times = [new Date(dateInputs[0].value + " " + timeInputs[0].value), new Date(dateInputs[1].value + " " + timeInputs[1].value)], time = (times[1] - times[0]) / 60000, moneyResult = (moneys[1] - moneys[0]) / time;
     perMin.innerText = "Per Minute: " + parseFloat(moneyResult.toFixed(0)).toLocaleString(), perHour.innerText = "Per Hour: " + parseFloat((moneyResult * 60).toFixed(0)).toLocaleString(), perDay.innerText = "Per Day: " + parseFloat((moneyResult * 1440).toFixed(0)).toLocaleString(); results.style.opacity = "1";
     seconds = ((times[1] - times[0]) / 1000).toFixed(0), minutes = 0, hours = 0, days = 0;
-    while(seconds>=60) {seconds-=60;minutes++}
-    while(minutes>=60){minutes-=60;hours++}
-    while(hours>=24){hours-=24;days++}
+    while (seconds >= 60) { seconds -= 60; minutes++ }
+    while (minutes >= 60) { minutes -= 60; hours++ }
+    while (hours >= 24) { hours -= 24; days++ }
     seconds = seconds.toString().padStart(2, "0"), minutes = minutes.toString().padStart(2, "0"), hours = hours.toString().padStart(2, "0"), days = days.toString().padStart(2, "0");
     timeElapsed.innerText = `Time Elapsed: ${days}:${hours}:${minutes}:${seconds}`;
     addHistory(labelInput.value, Math.floor(moneyResult));
@@ -108,9 +110,44 @@ function addHistory(label, money) {
 }
 
 copyDate.addEventListener("click", () => {
-    if(dateInputs[1].value === "") {
+    if (dateInputs[1].value === "") {
         dateInputs[1].value = dateInputs[0].value;
     } else {
         dateInputs[0].value = dateInputs[1].value;
     }
 })
+
+firstFI.addEventListener("change", () => {
+    if (firstFI.files.length > 0) {
+        const fileName = firstFI.files[0].name;
+        if (fileName.toLowerCase().includes("robloxscreenshot")) {
+            let date = fileName.slice(16);
+            date = date.slice(0, 4) + "-" + date.slice(4, 6) + "-" + date.slice(6);
+            let time = date.slice(11);
+            time = time.slice(0, 2) + ":" + time.slice(2, 4) + ":" + time.slice(4, 6);
+            dateInputs[0].value = date.slice(0, 10);
+            timeInputs[0].value = time;
+        } else {
+            alert("Please use roblox screen shots.");
+            firstFI.value = null;
+        }
+    }
+})
+
+secondFI.addEventListener("change", () => {
+    if (secondFI.files.length > 0) {
+        const fileName = secondFI.files[0].name;
+        if (fileName.toLowerCase().includes("robloxscreenshot")) {
+            let date = fileName.slice(16);
+            date = date.slice(0, 4) + "-" + date.slice(4, 6) + "-" + date.slice(6);
+            let time = date.slice(11);
+            time = time.slice(0, 2) + ":" + time.slice(2, 4) + ":" + time.slice(4, 6);
+            dateInputs[1].value = date.slice(0, 10);
+            timeInputs[1].value = time;
+        } else {
+            alert("Please use roblox screen shots.");
+            secondFI.value = null;
+        }
+    }
+})
+
