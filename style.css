@@ -92,3 +92,28 @@ button {
 .FI {
     color: rgb(180, 180, 180);
 }
+
+.pointer {
+    cursor: pointer;
+}
+
+.double {
+    background-color: red;
+    border-style: solid;
+}
+
+button {
+    transition: 0.5s;
+}
+
+button:hover {
+    filter: brightness(75%);
+}
+
+button:not(:hover) {
+    transition: 0.5s;
+}
+
+.results > h1 {
+    font-size: 18pt;
+}
