@@ -5,6 +5,7 @@ const $$ = e => document.querySelectorAll(e);
 // Helpful functions :)
 const parseValue = (input) => parseFloat(input.value.replace(/,/g, ''));
 const parseNumber = (value) => value.toString().replace(/,/g, '');
+const print = (string) => console.log(string);  
 
 // DOM elements
 const calcButton = $(".calculate");
@@ -68,9 +69,9 @@ function calculate() {
     const moneys = [parseValue(firstMoney), parseValue(secondMoney)]; fixed.innerText = "";
     const times = [new Date(dateInputs[0].value + " " + timeInputs[0].value), new Date(dateInputs[1].value + " " + timeInputs[1].value)], time = (times[1] - times[0]) / 60000, moneyResult = (moneys[1] - moneys[0]) / time;
     perMin.innerText = "Per Minute: " + parseFloat(moneyResult.toFixed(0)).toLocaleString(), perHour.innerText = "Per Hour: " + parseFloat((moneyResult * 60).toFixed(0)).toLocaleString(), perDay.innerText = "Per Day: " + parseFloat((moneyResult * 1440).toFixed(0)).toLocaleString(); results.style.opacity = "1";
-    let elapsedTime = formatTimeTime((times[1] - times[0]) / 1000) 
+    const elapsedTime = formatTime((times[1] - times[0]) / 1000) 
     timeElapsed.innerText = `Time Elapsed: ${elapsedTime}`;
-    addHistory(labelInput.value, Math.floor(moneyResult), ((times[1] - times[0]) / 1000));
+    addHistory(labelInput.value, Math.floor(moneyResult), time * 60);
     if(doubleMode){fixed.innerText = "Without 2X: " + parseFloat(Math.floor(moneyResult / 2)).toLocaleString()}
 }
 
@@ -88,16 +89,14 @@ function formatMoneyInput() {
     }
 }
 
-// :)
-function formatTimeTime(time) {
-    seconds = time, minutes = 0, hours = 0, days = 0;
-    while (seconds >= 60) { seconds -= 60; minutes++ }
-    while (minutes >= 60) { minutes -= 60; hours++ }
-    while (hours >= 24) { hours -= 24; days++ }
-    seconds = seconds.toString().padStart(2, "0"), minutes = minutes.toString().padStart(2, "0"), hours = hours.toString().padStart(2, "0"), days = days.toString().padStart(2, "0");
-    return `${days}:${hours}:${minutes}:${seconds}`;
+// Credits to BanyanLLC for fixing this function and making it good and nice and pro
+function formatTime(secs) {
+    const d = Math.floor(secs / (3600 * 24)).toString().padStart(2, "0"),
+        h = Math.floor(secs % (3600 * 24) / 3600).toString().padStart(2, "0"),
+        m = Math.floor(secs % 3600 / 60).toString().padStart(2, "0"),
+        s = Math.floor(secs % 60).toString().padStart(2, "0")
+    return `${d}:${h}:${m}:${s}`;
 }
-
 // Function to remove formatting on focus
 function removeFormatting() {
     if (this.value) {
@@ -122,7 +121,7 @@ function updateHistory(history) {
         historyDisplay.appendChild(entryElement);
         entryElement.addEventListener("click", () => {
             let money = parseNumber(entry.result);
-            let time = formatTimeTime(entry.time);
+            let time = formatTime(entry.time);
             results.style.opacity = "1";
             perMin.innerText = "Per Minute: " + parseFloat(money).toLocaleString();
             perHour.innerText = "Per Hour: " + parseFloat(money * 60).toLocaleString();
