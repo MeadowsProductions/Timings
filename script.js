@@ -5,7 +5,8 @@ const $$ = e => document.querySelectorAll(e);
 // Helpful functions :)
 const parseValue = (input) => parseFloat(input.value.replace(/,/g, ''));
 const parseNumber = (value) => value.toString().replace(/,/g, '');
-const print = (string) => console.log(string);  
+const print = (string) => console.log(string);
+const commas = (number) => parseFloat(number).toLocaleString();
 
 // DOM elements
 const calcButton = $(".calculate");
@@ -21,6 +22,7 @@ const perDay = $(".perDay");
 const timeElapsed = $(".hours");
 const firstMoney = $(".first");
 const secondMoney = $(".second");
+const moneyInputs = [firstMoney, secondMoney];
 const results = $(".results");
 const historyDisplay = $(".history");
 const clearHistory = $(".clearHistory");
@@ -37,7 +39,7 @@ calcButton.addEventListener("click", calculate);
 
 // Event listener for double mode calculations
 double.addEventListener("click", () => {
-    if(doubleMode){
+    if (doubleMode) {
         doubleMode = false
         double.style.backgroundColor = "red";
     } else {
@@ -69,10 +71,10 @@ function calculate() {
     const moneys = [parseValue(firstMoney), parseValue(secondMoney)]; fixed.innerText = "";
     const times = [new Date(dateInputs[0].value + " " + timeInputs[0].value), new Date(dateInputs[1].value + " " + timeInputs[1].value)], time = (times[1] - times[0]) / 60000, moneyResult = (moneys[1] - moneys[0]) / time;
     perMin.innerText = "Per Minute: " + parseFloat(moneyResult.toFixed(0)).toLocaleString(), perHour.innerText = "Per Hour: " + parseFloat((moneyResult * 60).toFixed(0)).toLocaleString(), perDay.innerText = "Per Day: " + parseFloat((moneyResult * 1440).toFixed(0)).toLocaleString(); results.style.opacity = "1";
-    const elapsedTime = formatTime((times[1] - times[0]) / 1000) 
+    const elapsedTime = formatTime((times[1] - times[0]) / 1000)
     timeElapsed.innerText = `Time Elapsed: ${elapsedTime}`;
     addHistory(labelInput.value, Math.floor(moneyResult), time * 60);
-    if(doubleMode){fixed.innerText = "Without 2X: " + parseFloat(Math.floor(moneyResult / 2)).toLocaleString()}
+    if (doubleMode) { fixed.innerText = "Without 2X: " + parseFloat(Math.floor(moneyResult / 2)).toLocaleString() }
 }
 
 // Function to format time inputs
@@ -104,6 +106,9 @@ function removeFormatting() {
     }
 }
 
+function formatTimeString(string) {
+    return string.slice(0, 2) + ":" + string.slice(2, 4) + ":" + string.slice(4, 6);
+}
 // Function to clear localStorage and reload the page
 function clearLocalStorage() {
     localStorage.clear();
@@ -133,7 +138,7 @@ function updateHistory(history) {
 
 // Function to add history
 function addHistory(label, money, time) {
-    if(doubleMode) {money = money / 2}
+    if (doubleMode) { money = money / 2 }
     const resultEntry = { label: label || "[Blank]", result: parseFloat(money).toLocaleString(), time: time };
     savedHistory.push(resultEntry);
     localStorage.setItem("historyV3", JSON.stringify(savedHistory));
@@ -141,17 +146,51 @@ function addHistory(label, money, time) {
 }
 
 // Function to copy date
-copyDate.addEventListener("click", () => {if (dateInputs[1].value === "") {dateInputs[1].value = dateInputs[0].value;} else {dateInputs[0].value = dateInputs[1].value;}})
+copyDate.addEventListener("click", () => { if (dateInputs[1].value === "") { dateInputs[1].value = dateInputs[0].value; } else { dateInputs[0].value = dateInputs[1].value; } })
 
 // Function to insert files (regex is crazy)
 fis.forEach((el, i) => el.addEventListener("change", () => {
-    const fileName = el.files[0].name;
-    if (fileName && fileName.toLowerCase().includes("robloxscreenshot")) {
-        let date = fileName.slice(16); date = date.slice(0, 4) + "-" + date.slice(4, 6) + "-" + date.slice(6);
-        let time = date.slice(11); time = time.slice(0, 2) + ":" + time.slice(2, 4) + ":" + time.slice(4, 6);
-        dateInputs[i].value = date.slice(0, 10);
+    const fileName = el.files[0].name.toString();
+    if (fileName) {
+        let date = fileName.slice(11, 21);
+        let time = formatTimeString(fileName.slice(22, 28));
+        dateInputs[i].value = date;
         timeInputs[i].value = time;
     } else {
-        alert("Please use Roblox screenshots."); el.value = null;
+        alert("Please insert valid files."); el.value = null;
     }
+    OCRMagic(el, i);
 }));
+
+// ITS MAGIC!
+async function OCRMagic(input, i) {
+    const imageFile = input.files[0];
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    try {
+        const response = await fetch('https://api.ocr.space/parse/image', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'apikey': 'K81112434088957', // guys please dont steal my api key :(
+            },
+        });
+        const result = await response.json();
+        moneyInputs[i].value = OCRMagicFormat(result.ParsedResults[0].ParsedText);
+    } catch (error) {
+        console.error("There was an error, please share the following info: " + error);
+    }
+}
+
+function OCRMagicFormat(input) {
+    for(i = 0; i < input.length; i++) {
+        input = input.replace(/[^0-9]/g, '');
+    }
+    input = commas(input);
+    return input; // Output :)
+}
+
+// Credits:
+
+// MEEEEE
+// BanyanLLC (OcrMAGIC and FormatTime)
