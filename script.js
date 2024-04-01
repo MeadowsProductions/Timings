@@ -72,7 +72,7 @@ function calculate() {
         new Date(dateInputs[0].value + " " + timeInputs[0].value), new Date(dateInputs[1].value + " " + timeInputs[1].value),
     ];
     const time = (times[1] - times[0]) / 60000;
-    const moneyResult = (moneys[1] - moneys[0]) / time; if(doubleMode){moneyResult /= 2}; 
+    let moneyResult = ((moneys[1] - moneys[0]) / time) * 1.1; if(doubleMode){moneyResult /= 2}; 
     perMin.innerText = "Per Minute: " + parseFloat(moneyResult.toFixed(0)).toLocaleString();
     perHour.innerText = "Per Hour: " + parseFloat((moneyResult * 60).toFixed(0)).toLocaleString();
     perDay.innerText = "Per Day: " + parseFloat((moneyResult * 1440).toFixed(0)).toLocaleString();
@@ -151,9 +151,6 @@ function updateHistory(history) {
 
 // Function to add history
 function addHistory(label, money, time) {
-    if (doubleMode) {
-        money = money / 2;
-    }
     const resultEntry = {
         label: label || "[Blank]", result: parseFloat(money).toLocaleString(), time: time,
     };
@@ -178,7 +175,7 @@ fis.forEach((el, i) => el.addEventListener("change", () => {
         alert("Please insert valid files."); el.value = null; return false;
     }
     OCRMagic(el, i);
-}));
+}))
 
 // ITS MAGIC!
 
