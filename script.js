@@ -72,7 +72,7 @@ function calculate() {
         new Date(dateInputs[0].value + " " + timeInputs[0].value), new Date(dateInputs[1].value + " " + timeInputs[1].value),
     ];
     const time = (times[1] - times[0]) / 60000;
-    let moneyResult = ((moneys[1] - moneys[0]) / time) * 1.1; if(doubleMode){moneyResult /= 2}; 
+    let moneyResult = ((moneys[1] - moneys[0]) / time); if(doubleMode){moneyResult /= 2}; 
     perMin.innerText = "Per Minute: " + parseFloat(moneyResult.toFixed(0)).toLocaleString();
     perHour.innerText = "Per Hour: " + parseFloat((moneyResult * 60).toFixed(0)).toLocaleString();
     perDay.innerText = "Per Day: " + parseFloat((moneyResult * 1440).toFixed(0)).toLocaleString();
