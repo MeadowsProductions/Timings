@@ -32,6 +32,7 @@ const historyDisplay = $(".history");
 const clearHistory = $(".clearHistory");
 const copyDate = $(".copyDate");
 const double = $(".double");
+const history_toggle = $(".toggle-history");
 
 // Variables for calculations
 let doubleMode = false;
@@ -78,7 +79,7 @@ function calculate() {
     perDay.innerText = "Per Day: " + parseFloat((moneyResult * 1440).toFixed(0)).toLocaleString();
     results.style.opacity = "1";
     const elapsedTime = formatTime((times[1] - times[0]) / 1000); timeElapsed.innerText = `Time Elapsed: ${elapsedTime}`;
-    addHistory(labelInput.value, Math.floor(moneyResult), time * 60);
+    if(history_toggle.checked) {addHistory(labelInput.value, moneyResult.toFixed(0), (times[1] - times[0] / 1000))};
 }
 
 // Function to format time inputs
@@ -125,12 +126,12 @@ function clearLocalStorage() {
 
 // Function to update history
 function updateHistory(history) {
-    historyDisplay.innerHTML = "";
+    $(".true-history").innerHTML = "";
     history.forEach((entry, index) => {
         if (!entry.result) return false;
         const entryElement = document.createElement("div");
         entryElement.innerHTML = `<h2 class="pointer">${entry.label}:</h2><h2 class="pointer">${entry.result}</h2>`;
-        historyDisplay.appendChild(entryElement);
+        $(".true-history").appendChild(entryElement);
         entryElement.addEventListener("click", () => {
             const money = parseNumber(entry.result);
             const time = formatTime(entry.time);

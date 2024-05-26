@@ -117,3 +117,14 @@ button:not(:hover) {
 .results > h1 {
     font-size: 20pt;
 }
+
+.toggle-history {
+    position: absolute;
+    bottom: 0px;
+    left: 0px; /* this is not working */
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: inline-block;
+    z-index: 10;
+}
